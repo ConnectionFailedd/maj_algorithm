@@ -36,7 +36,12 @@ void Concealed::discard(const Tile & src){
     }
 }
 
-int Concealed::calc_shanten() const{
+int Concealed::calc_shanten() const {
+    Serials serials = translate_to_serials();
+    std::vector<Partitions> blocks_partitions(0);
+    for(auto serial : serials){
+        blocks_partitions.push_back(depart(serial));
+    }
     // todo
 }
 

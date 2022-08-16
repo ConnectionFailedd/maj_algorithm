@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <set>
 
 #include "tile.hpp"
 
@@ -26,14 +27,28 @@ namespace MyMahjong{
     class Concealed: private Tiles {
     private:
         /*
-         * Serial:
+         * Serials:
+         * every sub-vector is a independent part
+         * the struct of the tuple: (int num_tiles, int distance, Tile tile_name)
          * for example
          * 3p1123666s will be interpreted to
          * [ [(1, __INT_MAX__, _3P)] [(2, 1, _1S), (1, 1, _2S), (1, 3, _3S)] [(3, 0, _6S)] ]
-         * every sub-vector is a independent part
-         * the struct of the tuple: (int num_tiles, int distance, Tile tile_name)
          */
-        typedef std::vector<std::vector<std::tuple<int, int, Tile>>> Serial;
+        typedef std::vector<std::tuple<int, int, Tile>> Serial;
+        typedef std::vector<Serial> Serials;
+        /*
+         * Partition:
+         * the struct of the tuple: (int num_melds, int num_couples, int num_pairs, set<Tile> tiles_need_from_blocks, set<Tile> tiles_need_from_single_tile)
+         * for example
+         * depart 2345p, [(1, 1, _2P), (1, 1, _3P), (1, 1, _4P), (1, __INT_MAX__, _5P)]
+         * result is
+         * [(1, 0, 0, [], [34567p]), (1, 0, 0, [], [1234p])]
+         */
+        typedef std::tuple<int, int, int, std::set<Tile>> Partition;
+        typedef std::vector<Partition> Partitions;
+
+        Serials translate_to_serials() const;
+        static Partitions depart(const Serial &);
 
 
     public:
